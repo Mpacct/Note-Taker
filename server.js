@@ -6,6 +6,7 @@ const notesData = require('./db/db.json');
 const fs = require('fs');
 // Helper method for generating unique ids
 const uuid = require('./helpers/uuid');
+const { readFromFile, writeToFile, readAndAppend } = require('./helpers/fsUtils');
 const path = require('path');
 const PORT = process.env.PORT || 3001;
 
@@ -26,7 +27,10 @@ app.get('/notes', (req, res) => {
 });
 
 // res.json() allows us to return JSON instead of a buffer, string, or static file
-app.get('/api/notes', (req, res) => res.json(notesData));
+app.get('/api/notes', (req, res) => {
+    readFromFile('./db/db.json')
+        .then((data) => res.json(JSON.parse(data)))
+});
 
 app.post('/api/notes', (req, res) => {
     // Log that a POST request was received
